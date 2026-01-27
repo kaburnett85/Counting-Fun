@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counting Fun!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard', 'Arial Rounded MT Bold', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            height: 100vh;
+        }
+
+        .number-display {
+            font-size: 120px;
+            color: white;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .instruction {
+            font-size: 28px;
+            color: #fff3cd;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 900px;
+            height: 400px;
+            gap: 20px;
+        }
+
+        .dot-container {
+            flex: 1;
+            background: rgba(255,255,255,0.2);
+            border-radius: 30px;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 15px;
+            justify-content: center;
+            border: 4px dashed rgba(255,255,255,0.5);
+            position: relative;
+            min-height: 350px;
+        }
+
+        .dot-container.source {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .dot-container.target {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .container-label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        .dot {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dot:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        .dot:active {
+            cursor: grabbing;
+            transform: scale(1.15);
+        }
+
+        .dot.dragging {
+            opacity: 0.8;
+            transform: scale(1.2);
+            z-index: 1000;
+        }
+
+        .submit-btn {
+            margin-top: 30px;
+            padding: 20px 60px;
+            font-size: 32px;
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .new-game-btn {
+            margin-top: 15px;
+            padding: 15px 40px;
+            font-size: 24px;
+            background: linear-gradient(145deg, #FF9800, #F57C00);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .new-game-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Message overlay */
+        .message-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .message-overlay.show {
+            display: flex;
+        }
+
+        .message {
+            font-size: 80px;
+            color: white;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+            animation: pop 0.5s ease-out;
+        }
+
+        .message.success {
+            color: #90EE90;
+        }
+
+        .message.try-again {
+            color: #FFB6C1;
+            font-size: 60px;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Fireworks */
+        .fireworks-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: particle-fly 1.5s ease-out forwards;
+        }
+
+        @keyframes particle-fly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        /* Touch-friendly styles */
+        @media (max-width: 768px) {
+            .number-display {
+                font-size: 80px;
+            }
+
+            .instruction {
+                font-size: 22px;
+            }
+
+            .game-area {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .dot-container {
+                min-height: 200px;
+            }
+
+            .dot {
+                width: 50px;
+                height: 50px;
+            }
+
+            .submit-btn {
+                padding: 15px 40px;
+                font-size: 26px;
+            }
+
+            .message {
+                font-size: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="number-display" id="targetNumber">5</div>
+        <div class="instruction">Drag this many dots to the other side!</div>
+
+        <div class="game-area">
+            <div class="dot-container source" id="sourceContainer">
+                <span class="container-label">Dots here</span>
+            </div>
+            <div class="dot-container target" id="targetContainer">
+                <span class="container-label">Move dots here</span>
+            </div>
+        </div>
+
+        <button class="submit-btn" id="submitBtn">Check!</button>
+        <button class="new-game-btn" id="newGameBtn">New Number</button>
+    </div>
+
+    <div class="message-overlay" id="messageOverlay">
+        <div class="message" id="message"></div>
+    </div>
+
+    <div class="fireworks-container" id="fireworksContainer"></div>
+
+    <script>
+        // Dot colors - bright and cheerful for kids
+        const DOT_COLORS = [
+            '#FF6B6B', // Red
+            '#4ECDC4', // Teal
+            '#FFE66D', // Yellow
+            '#95E1D3', // Mint
+            '#FF8C94', // Pink
+            '#A8E6CF', // Light green
+            '#DDA0DD', // Plum
+            '#87CEEB', // Sky blue
+            '#F0E68C', // Khaki
+            '#FFA07A'  // Light salmon
+        ];
+
+        let targetNumber = 5;
+        let draggedDot = null;
+
+        // Initialize the game
+        function initGame() {
+            targetNumber = Math.floor(Math.random() * 10) + 1;
+            document.getElementById('targetNumber').textContent = targetNumber;
+
+            createDots();
+            hideMessage();
+        }
+
+        // Create colorful dots
+        function createDots() {
+            const sourceContainer = document.getElementById('sourceContainer');
+            const targetContainer = document.getElementById('targetContainer');
+
+            // Clear existing dots (keep the labels)
+            const sourceLabel = sourceContainer.querySelector('.container-label');
+            const targetLabel = targetContainer.querySelector('.container-label');
+            sourceContainer.innerHTML = '';
+            targetContainer.innerHTML = '';
+            sourceContainer.appendChild(sourceLabel);
+            targetContainer.appendChild(targetLabel);
+
+            // Create 10 dots
+            for (let i = 0; i < 10; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.backgroundColor = DOT_COLORS[i];
+                dot.draggable = true;
+                dot.id = `dot-${i}`;
+
+                // Add shine effect
+                dot.style.background = `radial-gradient(circle at 30% 30%, ${lightenColor(DOT_COLORS[i], 40)}, ${DOT_COLORS[i]})`;
+
+                // Drag events for desktop
+                dot.addEventListener('dragstart', handleDragStart);
+                dot.addEventListener('dragend', handleDragEnd);
+
+                // Touch events for mobile
+                dot.addEventListener('touchstart', handleTouchStart, { passive: false });
+                dot.addEventListener('touchmove', handleTouchMove, { passive: false });
+                dot.addEventListener('touchend', handleTouchEnd);
+
+                sourceContainer.appendChild(dot);
+            }
+        }
+
+        // Lighten a color for the shine effect
+        function lightenColor(color, percent) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return '#' + (0x1000000 +
+                (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255)
+            ).toString(16).slice(1);
+        }
+
+        // Desktop drag handlers
+        function handleDragStart(e) {
+            draggedDot = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedDot = null;
+        }
+
+        // Touch handlers for mobile
+        let touchStartX, touchStartY;
+        let currentTouchDot = null;
+        let dotClone = null;
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            currentTouchDot = e.target;
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+
+            // Create a visual clone for dragging
+            dotClone = currentTouchDot.cloneNode(true);
+            dotClone.style.position = 'fixed';
+            dotClone.style.left = (touch.clientX - 30) + 'px';
+            dotClone.style.top = (touch.clientY - 30) + 'px';
+            dotClone.style.zIndex = '10000';
+            dotClone.style.pointerEvents = 'none';
+            dotClone.style.opacity = '0.8';
+            document.body.appendChild(dotClone);
+
+            currentTouchDot.style.opacity = '0.3';
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!dotClone) return;
+
+            const touch = e.touches[0];
+            dotClone.style.left = (touch.clientX - 30) + 'px';
+            dotClone.style.top = (touch.clientY - 30) + 'px';
+        }
+
+        function handleTouchEnd(e) {
+            if (!currentTouchDot || !dotClone) return;
+
+            const touch = e.changedTouches[0];
+            const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+
+            // Find the container we're dropping into
+            let targetContainer = null;
+            if (dropTarget) {
+                if (dropTarget.classList.contains('dot-container')) {
+                    targetContainer = dropTarget;
+                } else if (dropTarget.closest('.dot-container')) {
+                    targetContainer = dropTarget.closest('.dot-container');
+                }
+            }
+
+            if (targetContainer && targetContainer !== currentTouchDot.parentElement) {
+                targetContainer.appendChild(currentTouchDot);
+            }
+
+            currentTouchDot.style.opacity = '1';
+            dotClone.remove();
+            dotClone = null;
+            currentTouchDot = null;
+        }
+
+        // Container drag events
+        const containers = document.querySelectorAll('.dot-container');
+        containers.forEach(container => {
+            container.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            });
+
+            container.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (draggedDot && container !== draggedDot.parentElement) {
+                    container.appendChild(draggedDot);
+                }
+            });
+        });
+
+        // Submit button
+        document.getElementById('submitBtn').addEventListener('click', checkAnswer);
+        document.getElementById('newGameBtn').addEventListener('click', initGame);
+
+        function checkAnswer() {
+            const targetContainer = document.getElementById('targetContainer');
+            const dotsInTarget = targetContainer.querySelectorAll('.dot').length;
+
+            if (dotsInTarget === targetNumber) {
+                showSuccess();
+            } else {
+                showTryAgain();
+            }
+        }
+
+        function showSuccess() {
+            const overlay = document.getElementById('messageOverlay');
+            const message = document.getElementById('message');
+
+            message.textContent = '🎉 Good Job! 🎉';
+            message.className = 'message success';
+            overlay.classList.add('show');
+
+            // Trigger fireworks
+            createFireworks();
+
+            // Play success sound
+            speak('Good job!', 1.0, 1.2);
+
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                hideMessage();
+            }, 3000);
+        }
+
+        function showTryAgain() {
+            const overlay = document.getElementById('messageOverlay');
+            const message = document.getElementById('message');
+
+            message.textContent = 'Try Again 💪';
+            message.className = 'message try-again';
+            overlay.classList.add('show');
+
+            // Play soft "try again" voice
+            speak('Try again', 0.8, 0.9);
+
+            // Hide message after 2 seconds
+            setTimeout(() => {
+                hideMessage();
+            }, 2000);
+        }
+
+        function hideMessage() {
+            const overlay = document.getElementById('messageOverlay');
+            overlay.classList.remove('show');
+        }
+
+        // Text-to-speech for feedback
+        function speak(text, rate = 1, pitch = 1) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = rate;
+                utterance.pitch = pitch;
+                utterance.volume = 0.8;
+
+                // Try to find a friendly voice
+                const voices = speechSynthesis.getVoices();
+                const friendlyVoice = voices.find(v =>
+                    v.name.includes('Female') ||
+                    v.name.includes('Samantha') ||
+                    v.name.includes('Karen')
+                );
+                if (friendlyVoice) {
+                    utterance.voice = friendlyVoice;
+                }
+
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Load voices
+        if ('speechSynthesis' in window) {
+            speechSynthesis.onvoiceschanged = () => {
+                speechSynthesis.getVoices();
+            };
+        }
+
+        // Fireworks animation
+        function createFireworks() {
+            const container = document.getElementById('fireworksContainer');
+            const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FF8C94', '#A8E6CF', '#DDA0DD', '#87CEEB'];
+
+            // Create multiple firework bursts
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * (window.innerHeight * 0.6);
+                    createBurst(container, x, y, colors);
+                }, i * 200);
+            }
+        }
+
+        function createBurst(container, x, y, colors) {
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+
+                // Random direction
+                const angle = (Math.PI * 2 / particleCount) * i;
+                const velocity = 50 + Math.random() * 100;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+
+                container.appendChild(particle);
+
+                // Remove particle after animation
+                setTimeout(() => {
+                    particle.remove();
+                }, 1500);
+            }
+        }
+
+        // Start the game
+        initGame();
+    </script>
+</body>
+</html>
