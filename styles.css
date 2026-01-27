@@ -1,0 +1,291 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Sans MS', 'Chalkboard', 'Marker Felt', cursive, sans-serif;
+    background: linear-gradient(135deg, #a8e6cf 0%, #88d8b0 25%, #ffeaa7 50%, #fdcb6e 75%, #fab1a0 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.game-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 900px;
+    width: 100%;
+    text-align: center;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #e17055;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.number-display {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 25px;
+    display: inline-block;
+}
+
+.number-display p {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 10px;
+}
+
+#target-number {
+    font-size: 5rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.game-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.dots-container {
+    background: #f8f9fa;
+    border-radius: 20px;
+    padding: 15px;
+    min-width: 280px;
+    border: 4px dashed #dee2e6;
+}
+
+.area-label {
+    font-size: 1.2rem;
+    color: #636e72;
+    margin-bottom: 10px;
+}
+
+.dots-area {
+    min-height: 200px;
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-content: flex-start;
+    border: 3px solid #dfe6e9;
+}
+
+.drop-zone {
+    border: 4px dashed #00b894;
+    background: #e8f8f5;
+    transition: all 0.3s ease;
+}
+
+.drop-zone.drag-over {
+    background: #d5f4e6;
+    border-color: #00a86b;
+    transform: scale(1.02);
+}
+
+.counter {
+    font-size: 1.3rem;
+    color: #2d3436;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#dot-count {
+    color: #0984e3;
+    font-size: 1.5rem;
+}
+
+.arrow {
+    font-size: 3rem;
+    animation: bounce-right 1s infinite;
+}
+
+@keyframes bounce-right {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+}
+
+.dot {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: grab;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 -3px 6px rgba(0, 0, 0, 0.1), inset 0 3px 6px rgba(255, 255, 255, 0.4);
+}
+
+.dot:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 -3px 6px rgba(0, 0, 0, 0.1), inset 0 3px 6px rgba(255, 255, 255, 0.4);
+}
+
+.dot:active,
+.dot.dragging {
+    cursor: grabbing;
+    transform: scale(1.15);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #00b894, #00a86b);
+    color: white;
+    font-size: 1.8rem;
+    font-family: inherit;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
+    margin-bottom: 15px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 184, 148, 0.5);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.new-game-btn {
+    background: linear-gradient(135deg, #fdcb6e, #f39c12);
+    color: white;
+    font-size: 1.3rem;
+    font-family: inherit;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+    display: block;
+    margin: 0 auto 20px;
+}
+
+.new-game-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(243, 156, 18, 0.5);
+}
+
+.feedback {
+    font-size: 2.5rem;
+    font-weight: bold;
+    padding: 20px;
+    border-radius: 20px;
+    margin-top: 10px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.5s ease;
+}
+
+.feedback.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.feedback.correct {
+    background: linear-gradient(135deg, #00b894, #55efc4);
+    color: white;
+    animation: celebrate 0.5s ease;
+}
+
+.feedback.incorrect {
+    background: linear-gradient(135deg, #fdcb6e, #ffeaa7);
+    color: #2d3436;
+}
+
+@keyframes celebrate {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.1) rotate(-3deg); }
+    75% { transform: scale(1.1) rotate(3deg); }
+}
+
+/* Fireworks Canvas */
+#fireworks-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Dot Colors */
+.dot.color-1 { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); }
+.dot.color-2 { background: linear-gradient(135deg, #feca57, #ff9f43); }
+.dot.color-3 { background: linear-gradient(135deg, #48dbfb, #0abde3); }
+.dot.color-4 { background: linear-gradient(135deg, #ff9ff3, #f368e0); }
+.dot.color-5 { background: linear-gradient(135deg, #54a0ff, #2e86de); }
+.dot.color-6 { background: linear-gradient(135deg, #5f27cd, #341f97); }
+.dot.color-7 { background: linear-gradient(135deg, #00d2d3, #01a3a4); }
+.dot.color-8 { background: linear-gradient(135deg, #ff6b81, #ee5a6c); }
+.dot.color-9 { background: linear-gradient(135deg, #26de81, #20bf6b); }
+.dot.color-10 { background: linear-gradient(135deg, #fd79a8, #e84393); }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.8rem;
+    }
+
+    #target-number {
+        font-size: 3.5rem;
+    }
+
+    .dots-container {
+        min-width: 100%;
+    }
+
+    .arrow {
+        transform: rotate(90deg);
+        font-size: 2rem;
+    }
+
+    @keyframes bounce-right {
+        0%, 100% { transform: rotate(90deg) translateX(0); }
+        50% { transform: rotate(90deg) translateX(10px); }
+    }
+
+    .dot {
+        width: 45px;
+        height: 45px;
+    }
+
+    .submit-btn {
+        font-size: 1.4rem;
+        padding: 12px 30px;
+    }
+
+    .feedback {
+        font-size: 1.8rem;
+    }
+}
+
+/* Touch-friendly adjustments */
+@media (pointer: coarse) {
+    .dot {
+        width: 55px;
+        height: 55px;
+    }
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counting Fun!</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="title">🌟 Counting Fun! 🌟</h1>
+
+        <div class="number-display">
+            <p>Count to:</p>
+            <span id="target-number">5</span>
+        </div>
+
+        <div class="game-area">
+            <div class="dots-container" id="dots-source">
+                <p class="area-label">Drag dots from here</p>
+                <div class="dots-area" id="source-area"></div>
+            </div>
+
+            <div class="arrow">➡️</div>
+
+            <div class="dots-container" id="dots-target">
+                <p class="area-label">Drop dots here</p>
+                <div class="dots-area drop-zone" id="target-area"></div>
+                <p class="counter">You have: <span id="dot-count">0</span> dots</p>
+            </div>
+        </div>
+
+        <button class="submit-btn" id="submit-btn">Check My Answer! ✓</button>
+
+        <button class="new-game-btn" id="new-game-btn">New Game 🎲</button>
+
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <canvas id="fireworks-canvas"></canvas>
+
+    <script src="app.js"></script>
+</body>
+</html>
