@@ -174,8 +174,11 @@ def _make_handler(router, server: DashboardServer):
             self.send_header("Referrer-Policy", "no-referrer")
             self.send_header(
                 "Content-Security-Policy",
+                # connect-src 'self' is required: without it default-src 'none'
+                # blocks the page's own fetch() calls, and every correction
+                # silently fails in the browser.
                 "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; "
-                "img-src data:; form-action 'self'; base-uri 'none'",
+                "img-src data:; connect-src 'self'; form-action 'self'; base-uri 'none'",
             )
             self.send_header("Cache-Control", "no-store")
             for key, value in (extra_headers or {}).items():

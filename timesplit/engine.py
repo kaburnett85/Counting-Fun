@@ -58,6 +58,27 @@ class Engine:
             self.model.load(tokens, classes)
             self._rebuild_classifier()
 
+    def ensure_seeded(self) -> int:
+        """Put the shipped rules back if the database has none.
+
+        This matters more than it looks. A database that had to be quarantined
+        and recreated comes back empty, and without this the tracker would
+        carry on happily filing everything as uncategorised. It also makes
+        `run --demo` useful on a fresh machine.
+        """
+        from .store import repo_rules
+        from .wizard.seeds import apply_seed_rules, seed_model_priors
+
+        if repo_rules.count(self.db) > 0:
+            return 0
+        with self._lock:
+            added = apply_seed_rules(self.db, self.category_ids)
+            seed_model_priors(self.db, self.category_ids, self.model)
+            self.reload()
+        if added:
+            log.info("restored %d starting rules to an empty database", added)
+        return added
+
     def _rebuild_classifier(self) -> None:
         job_ids = [c["id"] for c in repo_categories.job_categories(self.db)]
         ctx = ClassifierContext(

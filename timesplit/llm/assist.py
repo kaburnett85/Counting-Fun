@@ -19,7 +19,7 @@ from ..core.features import activity_from_row, signature
 from ..core.models import RULE_PRIORITY_LLM, Activity
 from ..core.urls import host_of
 from ..logging_setup import get as get_logger
-from ..store import repo_rules
+from ..store import repo_rules, repo_sessions
 from ..store.db import Database
 from .redact import redact_domain, redact_title
 
@@ -91,7 +91,9 @@ def gather_unknowns(engine, limit: int = 40) -> list[dict]:
         " LEFT JOIN categories c ON c.id = s.category_id"
         " WHERE s.is_locked = 0 AND s.needs_review = 1"
         " AND (s.category_id IS NULL OR c.key = 'unknown')"
-        " ORDER BY s.duration_s DESC LIMIT 600"
+        " AND s.duration_s >= ?"
+        " ORDER BY s.duration_s DESC LIMIT 600",
+        (repo_sessions.REVIEW_MIN_SECONDS,)
     )
     seen: set[str] = set()
     already_asked = {

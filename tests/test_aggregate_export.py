@@ -214,3 +214,23 @@ def test_uncategorised_time_stays_out_of_the_invoice(engine, tmp_path):
 def test_export_of_an_empty_range_still_produces_files(engine, tmp_path):
     written = csv_export.write_all(engine, "2020-01-01", "2020-01-02", out=tmp_path)
     assert all(p.exists() for p in written)
+
+
+def test_trivial_sessions_do_not_clutter_the_review_queue(engine):
+    """A six-second window is not worth a click, but its time still counts."""
+    day = "2026-08-24"
+    add(engine, day, "quickbooks.exe", "Chart of accounts", 2100, "unknown", review=True)
+    add(engine, day, "explorer.exe", "Downloads", 6, "unknown", offset=2100, review=True)
+
+    queue = repo_sessions.review_queue(engine.db)
+    assert [r["exe_name"] for r in queue] == ["quickbooks.exe"]
+
+    count, seconds = repo_sessions.review_totals(engine.db)
+    assert count == 1 and seconds == 2100
+
+    # The six seconds are still on the day's books.
+    assert totals_for_day_seconds(engine, day) == 2106
+
+
+def totals_for_day_seconds(engine, day: str) -> float:
+    return aggregate.totals_for_day(engine.db, day).tracked_seconds

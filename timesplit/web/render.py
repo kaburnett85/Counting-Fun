@@ -353,12 +353,24 @@ def rules_page(*, rules: list[dict], categories: list[dict], model: dict,
             f"</td></tr>"
             for r in group
         )
-        sections.append(
-            f'<div class="panel"><h2>{esc(labels.get(source, source))} '
-            f"({len(group)})</h2><table><thead><tr><th>Match on</th><th>Pattern</th>"
+        table = (
+            f"<table><thead><tr><th>Match on</th><th>Pattern</th>"
             f'<th>Job</th><th class="num">Used</th><th></th></tr></thead>'
-            f"<tbody>{body_rows}</tbody></table></div>"
+            f"<tbody>{body_rows}</tbody></table>"
         )
+        heading = f"{labels.get(source, source)} ({len(group)})"
+        if source == "seed":
+            # 130-odd shipped rules would bury the handful that are yours.
+            sections.append(
+                f'<div class="panel"><details><summary><h2 style="display:inline">'
+                f"{esc(heading)}</h2></summary>"
+                f'<p class="note">The list TimeSplit ships with. Anything you add '
+                f"above overrides these.</p>{table}</details></div>"
+            )
+        else:
+            sections.append(
+                f'<div class="panel"><h2>{esc(heading)}</h2>{table}</div>'
+            )
 
     options = "".join(
         f'<option value="{esc(c["key"])}">{esc(c["display_name"])}</option>' for c in categories

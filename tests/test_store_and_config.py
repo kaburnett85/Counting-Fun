@@ -192,3 +192,42 @@ def test_renaming_a_job_keeps_its_history(tmp_path):
     rows = repo_sessions.sessions_for_day(db, "2026-08-24")
     assert rows[0]["category_name"] == "Teaching"
     db.close()
+
+
+def test_an_empty_database_gets_its_starting_rules_back(tmp_path):
+    """A quarantined-and-recreated database must not silently lose every rule.
+
+    Without this the tracker would come back up and file everything as
+    uncategorised, with nothing to indicate why.
+    """
+    from timesplit.engine import Engine
+
+    db = Database(tmp_path / "empty.db")
+    engine = Engine(db, Config())
+    assert repo_rules.count(db) == 0
+
+    added = engine.ensure_seeded()
+    assert added > 100
+    assert engine.ensure_seeded() == 0, "it must not re-seed on every start"
+
+    from timesplit.core.models import Activity
+
+    decision = engine.classify(Activity("chrome.exe", "x", "https://zillow.com/a", "zillow.com"))
+    assert engine.category_key(decision.category_id) == "real_estate"
+    db.close()
+
+
+def test_seeding_does_not_overwrite_rules_you_already_have(tmp_path):
+    from timesplit.engine import Engine
+
+    db = Database(tmp_path / "mine.db")
+    engine = Engine(db, Config())
+    engine.add_rule("domain", "zillow.com", "school")
+
+    assert engine.ensure_seeded() == 0, "a database with rules is left alone"
+
+    from timesplit.core.models import Activity
+
+    decision = engine.classify(Activity("chrome.exe", "x", "https://zillow.com/a", "zillow.com"))
+    assert engine.category_key(decision.category_id) == "school"
+    db.close()

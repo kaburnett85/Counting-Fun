@@ -121,6 +121,11 @@ select, input[type=text], input[type=date], input[type=number], input[type=passw
   opacity: 0; transition: opacity .18s; pointer-events: none; z-index: 20; }
 .flash.show { opacity: 1; }
 .note { font-size: 13px; color: var(--muted); line-height: 1.6; }
+details summary { cursor: pointer; list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: "▸ "; color: var(--muted); }
+details[open] summary::before { content: "▾ "; }
+details summary h2 { margin: 0; }
 .note code { background: var(--muted-bg); padding: 1px 5px; border-radius: 4px;
   font-size: 12px; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding: 8px 0 28px; }
@@ -158,8 +163,15 @@ JS = """
     var action = button.dataset.action;
 
     if (action === 'correct') {
-      var row = button.closest('[data-session-id]');
-      var scopeEl = row ? row.querySelector('[data-scope]') : null;
+      // Look inside the button's own action group first. Note that the button
+      // itself carries data-session-id, so closest('[data-session-id]') would
+      // return the button and find no scope selector inside it.
+      var group = button.closest('.actions');
+      var scopeEl = group ? group.querySelector('[data-scope]') : null;
+      if (!scopeEl) {
+        var row = button.closest('tr');
+        scopeEl = row ? row.querySelector('[data-scope]') : null;
+      }
       button.disabled = true;
       post('/api/correct', {
         session_id: Number(button.dataset.sessionId),

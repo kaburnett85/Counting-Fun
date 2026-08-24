@@ -67,6 +67,8 @@ class Application:
         from .backends.factory import get_capture, get_tray
         from .web.server import DashboardServer
 
+        self.engine.ensure_seeded()
+
         # Anything left open by a crash is closed at its last heartbeat, not
         # extended to now -- otherwise a power cut would bill days of work.
         recovered = repo_sessions.finalize_open_sessions(self.db, self.clock.now())
@@ -401,6 +403,7 @@ def _run_demo(app: Application) -> int:
     """Replay a day at full speed, then serve the dashboard."""
     from .backends.fake.capture_fake import ScriptedCaptureBackend
 
+    app.engine.ensure_seeded()
     app.capture = app._build_capture()
     app.capture.start()
     assert isinstance(app.capture, ScriptedCaptureBackend)

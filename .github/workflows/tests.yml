@@ -18,11 +18,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -r requirements-dev.txt
-      - run: pip install -e .
+      - run: pip install -e ".[xlsx]"
+      - name: Install a browser for the dashboard tests
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
       - name: Lint
         run: ruff check timesplit tests
       - name: Test
         run: pytest --cov=timesplit --cov-report=term-missing
+        env:
+          # The browser tests find chromium through playwright's own registry.
+          PLAYWRIGHT_CHROMIUM: ""
 
   windows-smoke:
     # The ONLY place Windows-specific code ever executes. The core packages are

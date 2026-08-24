@@ -136,23 +136,31 @@ def session(db: Database, session_id: int) -> dict | None:
     return dict(row) if row else None
 
 
-def review_queue(db: Database, limit: int = 100) -> list[dict]:
+#: Sessions shorter than this are not worth asking about. Their time still
+#: counts toward the day; they just do not earn a click in the review queue.
+REVIEW_MIN_SECONDS = 60
+
+
+def review_queue(db: Database, limit: int = 100, min_seconds: int = REVIEW_MIN_SECONDS
+                 ) -> list[dict]:
     """Unreviewed time, longest first -- so the first few clicks fix the most minutes."""
     return [
         dict(r)
         for r in db.query(
             SESSION_SELECT
-            + " WHERE s.needs_review = 1 AND s.is_locked = 0"
+            + " WHERE s.needs_review = 1 AND s.is_locked = 0 AND s.duration_s >= ?"
             " ORDER BY s.duration_s DESC LIMIT ?",
-            (limit,),
+            (min_seconds, limit),
         )
     ]
 
 
-def review_totals(db: Database) -> tuple[int, int]:
+def review_totals(db: Database, min_seconds: int = REVIEW_MIN_SECONDS) -> tuple[int, int]:
+    """Counts shown in the banner. Matches what the review page actually lists."""
     row = db.query_one(
         "SELECT COUNT(*) AS n, COALESCE(SUM(duration_s), 0) AS secs FROM sessions"
-        " WHERE needs_review = 1 AND is_locked = 0"
+        " WHERE needs_review = 1 AND is_locked = 0 AND duration_s >= ?",
+        (min_seconds,),
     )
     return (int(row["n"]), int(row["secs"])) if row else (0, 0)
 

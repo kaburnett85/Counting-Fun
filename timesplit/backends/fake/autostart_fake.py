@@ -14,4 +14,4 @@ class FakeAutostart:
         return True, "autostart is not available on this platform (no-op)"
 
     def status(self) -> tuple[bool, str]:
-        return self.installed, "fake autostart"
+        return self.installed, "starting at login is only available on Windows"

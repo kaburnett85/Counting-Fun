@@ -32,7 +32,9 @@ def dashboard(tmp_path):
     engine.reload()
 
     day = "2026-08-24"
-    base = 1_787_000_000
+    from timesplit.core.clock import day_bounds
+
+    base = day_bounds(day, engine.tz)[0] + 9 * 3600
     rows = [
         ("chrome.exe", "Canvas Gradebook - Google Chrome",
          "https://canvas.instructure.com/courses/1", "canvas.instructure.com", 3600),
