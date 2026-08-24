@@ -9,7 +9,7 @@ hide.
 from __future__ import annotations
 
 import time
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta, timezone
 from typing import Protocol
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -36,7 +36,7 @@ def resolve_zone(name: str = "") -> timezone | ZoneInfo:
     local = datetime.now().astimezone().tzinfo
     if isinstance(local, timezone | ZoneInfo):
         return local
-    return timezone.utc
+    return UTC
 
 
 class SystemClock:

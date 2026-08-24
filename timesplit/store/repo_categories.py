@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from ..config import EXCLUDED, Config, UNKNOWN
+from ..config import EXCLUDED, UNKNOWN, Config
 from .db import Database
 
 SYSTEM_CATEGORIES = [

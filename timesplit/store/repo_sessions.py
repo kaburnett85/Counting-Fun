@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from ..core.models import IdleRecord, SessionRecord
-
 from .db import Database
 
 

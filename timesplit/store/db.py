@@ -11,6 +11,7 @@ milliseconds off queries that run once a minute.
 
 from __future__ import annotations
 
+import contextlib
 import sqlite3
 import threading
 from collections.abc import Iterable, Iterator
@@ -20,7 +21,7 @@ from typing import Any
 
 from .. import paths
 from ..logging_setup import get as get_logger
-from .schema import MIGRATIONS, SCHEMA_VERSION
+from .schema import MIGRATIONS
 
 log = get_logger("store.db")
 
@@ -154,10 +155,8 @@ class Database:
 
     def close(self) -> None:
         with self._lock:
-            try:
+            with contextlib.suppress(sqlite3.Error):
                 self._conn.commit()
-            except sqlite3.Error:
-                pass
             self._conn.close()
 
     def __enter__(self) -> Database:

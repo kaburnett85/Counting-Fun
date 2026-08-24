@@ -9,6 +9,7 @@ The API key is deliberately NOT part of this file -- see backends SecretStore.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import tempfile
@@ -281,10 +282,8 @@ def load_config(path: Path | None = None) -> Config:
     except json.JSONDecodeError:
         # A corrupt config must not stop time tracking. Keep the bad file for
         # inspection and carry on with defaults.
-        try:
+        with contextlib.suppress(OSError):
             p.with_suffix(".json.bad").write_text(raw, encoding="utf-8")
-        except OSError:
-            pass
         return Config()
     return from_dict(data)
 
@@ -302,9 +301,7 @@ def save_config(cfg: Config, path: Path | None = None) -> Path:
             os.fsync(fh.fileno())
         os.replace(tmp, p)
     except BaseException:
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(tmp)
-        except OSError:
-            pass
         raise
     return p
