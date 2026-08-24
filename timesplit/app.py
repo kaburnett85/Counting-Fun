@@ -160,11 +160,9 @@ class Application:
         if self.url_resolver is not None:
             resolved = self.url_resolver.take_resolved(snapshot.hwnd, snapshot.title)
             if resolved:
-                from .core.urls import registrable_domain
+                from .core.urls import host_of
 
-                self._apply(
-                    self.tracker.attach_url(resolved, registrable_domain(resolved))
-                )
+                self._apply(self.tracker.attach_url(resolved, host_of(resolved)))
 
         self._maybe_maintenance()
         self._update_tray()
@@ -201,10 +199,14 @@ class Application:
             repo_sessions.insert_idle(self.db, op.idle)
 
     def _open_session(self, record: SessionRecord) -> None:
-        from .core.urls import registrable_domain
+        from .core.urls import host_of
 
+        # The full host, not the registrable domain: canvas.university.edu and
+        # payroll.university.edu can belong to different jobs, and "same
+        # website" has to mean the site you were actually on. The broader
+        # domain is still available to the classifier as a separate feature.
         if record.url and not record.domain:
-            record.domain = registrable_domain(record.url)
+            record.domain = host_of(record.url)
         activity = Activity(
             exe_name=record.exe_name, title=record.title,
             url=record.url, domain=record.domain,
