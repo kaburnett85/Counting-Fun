@@ -1,0 +1,44 @@
+name: tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r requirements-dev.txt
+      - run: pip install -e .
+      - name: Lint
+        run: ruff check timesplit tests
+      - name: Test
+        run: pytest --cov=timesplit --cov-report=term-missing
+
+  windows-smoke:
+    # The ONLY place Windows-specific code ever executes. The core packages are
+    # covered on Linux; this job proves the thin win/ adapters import and return
+    # plausible values on real Windows.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt -r requirements-win.txt
+      - run: pip install -e .
+      - name: Full suite on Windows
+        run: pytest
+      - name: Import every Windows backend
+        run: python -m timesplit selftest-win
+      - name: Doctor
+        run: python -m timesplit doctor

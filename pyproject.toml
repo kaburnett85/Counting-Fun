@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "timesplit"
+version = "0.1.0"
+description = "Background dual-job time tracker for Windows"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+win = ["pystray>=0.19", "Pillow>=10.0", "uiautomation>=2.0"]
+llm = ["anthropic>=0.40"]
+xlsx = ["openpyxl>=3.1"]
+dev = ["pytest>=7.4", "pytest-cov>=4.1", "ruff>=0.4"]
+
+[project.scripts]
+timesplit = "timesplit.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["timesplit*"]
+
+[tool.setuptools.package-data]
+timesplit = ["data/*.json", "data/*.txt", "data/*.png"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = ["E501", "B008", "SIM108"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["error::DeprecationWarning"]
+
+[tool.coverage.run]
+omit = ["timesplit/backends/win/*"]
