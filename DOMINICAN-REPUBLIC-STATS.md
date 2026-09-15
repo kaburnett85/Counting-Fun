@@ -325,3 +325,87 @@ Each is traceable to a Section 1–3 entry above.
 | 13 | UNESCO — Migration, displacement and education in the DR | https://unesdoc.unesco.org/ark:/48223/pf0000374682 |
 | 14 | UNESCO LLECE — ERCE 2019 national report, Dominican Republic | https://learningportal.iiep.unesco.org/en/library/estudio-regional-comparativo-y-explicativo-erce-2019-reporte-nacional-de-resultados |
 | 15 | World Bank WDI — NEET rate, Dominican Republic | https://data.worldbank.org/indicator/SL.UEM.NEET.ZS?locations=DO |
+
+---
+
+## 7. Verification of the three stats currently on the slide
+
+Reviewed as published: header **"IN THE COMMUNITIES WE SERVE"** over three figures.
+
+### 7.1 "81% of children cannot read proficiently by age 10" — ✅ **Accurate**
+
+This matches the World Bank's learning poverty figure exactly, and the wording matches the
+World Bank's own definition ("unable to read and understand a simple text by age 10"). Keep it.
+
+- Two caveats: it is a **national** figure, and it is the oldest number on the slide —
+  published October 2019 on a grade-6 assessment from 2013.
+- The World Bank's *State of Global Learning Poverty: 2022 Update* included the Dominican
+  Republic in its June 2022 release but publishes no superseding country rate; 81% remains
+  the citable figure.
+
+### 7.2 "35% of students won't finish high school" — ✅ **Accurate, slightly conservative**
+
+Upper secondary completion, three independent sources:
+
+| Source | Completion | Implied non-completion |
+|---|---|---|
+| UNESCO *GEM Report 2026* (2024 data) | 64% | **36%** |
+| UNESCO UIS SDG 4 country profile | 60.5% | **39.5%** |
+| UNICEF DR *Annual Report 2025* | 61% | **39%** |
+
+35% sits just below the most favourable of the three, so the slide understates the problem
+rather than overstating it. Defensible as written. National figure.
+
+### 7.3 "43% of families live on less than $14 a day" — ⚠️ **Three problems. Fix this one.**
+
+Queried directly against the World Bank Poverty and Inequality Platform (PIP) API for the
+Dominican Republic at a $14.00/day line, 2021 PPP:
+
+| Year | Share below $14/day |
+|---|---|
+| 2021 | 53.4% |
+| 2022 | 49.3% |
+| **2023** | **42.9%** |
+| **2024** | **38.0%** |
+
+**Problem 1 — it is a year out of date.** 42.9% is the 2023 figure, an almost exact match
+for the 43% on the slide, which is very likely where it came from. The current figure is
+**38.0%**. Poverty here is falling roughly 4–5 points a year, so this number will keep
+drifting and needs a review date attached.
+
+**Problem 2 — "families" is the wrong unit.** The World Bank measure is income **per
+person**, not per household. A family of four living on $14/day *combined* is far poorer
+than four people at $14/day *each*. As written the sentence describes a much more extreme
+threshold than the data supports, and it is the sort of error a donor with a calculator will
+find. Write "**people**" or "**per person**", not "families".
+
+**Problem 3 — $14/day is not a standard poverty line.** The World Bank's published lines are
+$3.00, $4.20 and $8.30/day (2021 PPP). $14 is a custom threshold, and it is a
+purchasing-power-parity figure, not a market-exchange-rate one — a reader converting $14 at
+the street rate will not reproduce it.
+
+**Recommended replacements**, all current and all standard:
+- "**14% of Dominicans live on less than $8.30 a day**" — the World Bank's upper-middle-income
+  poverty line, 2024. Standard, current, no custom-line explanation needed.
+- "**1 in 4 Dominican children lives below the poverty line**" — 25.2% of under-15s, 2024
+  (§2.1). Child-focused, which fits the mission better than an all-ages number.
+- If the $14 framing matters for scale, say "**38% of Dominicans live on less than $14 a day**"
+  and footnote it as 2024 PIP data at 2021 PPP.
+
+### 7.4 The header is the biggest exposure — ⚠️
+
+**All three figures are national Dominican Republic statistics, not measurements of the
+communities served.** Presenting them under "IN THE COMMUNITIES WE SERVE" attributes
+national data to a specific local population.
+
+If the communities served are poorer than the national average — very likely — then the true
+local figures are probably *worse* than what is on the slide, so the fix costs nothing
+rhetorically. Two options:
+
+1. **Relabel** to "In the Dominican Republic:" and cite the three sources in small print.
+   Zero work, removes the exposure entirely.
+2. **Keep the header and get local data.** Enrolment and completion records for the schools
+   served would support a genuine community-level completion figure, which is far more
+   compelling than a national one and cannot be challenged.
+
+Option 1 is the safe immediate fix; option 2 is the stronger long-term claim.
