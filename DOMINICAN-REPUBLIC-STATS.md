@@ -409,3 +409,124 @@ rhetorically. Two options:
    compelling than a national one and cannot be challenged.
 
 Option 1 is the safe immediate fix; option 2 is the stronger long-term claim.
+
+---
+
+## 8. Grade-by-grade completion: 6th grade, 8th/9th grade, 12th grade
+
+All figures are UNESCO Institute for Statistics **SDG indicator 4.1.2** (completion rate),
+pulled from the UIS public API. The underlying source is the Dominican Republic's own
+national household survey, **ENHOGAR 2024** (fielded August–October 2024), per the UIS
+footnote — so this is Dominican government survey data, not a modelled estimate.
+
+**Definition:** the share of young people aged 3–5 years *above* the intended age for the
+last grade of a level who have actually completed that grade. It counts late completion and
+repetition as completion, so it is a generous measure — the real-time on-track numbers are
+worse.
+
+### 8.1 National — share of students who do NOT complete each level
+
+| Level | Grade | Complete | **Do NOT complete** | Year |
+|---|---|---|---|---|
+| Primary | through **6th grade** | 90.1% | **9.9% — about 1 in 10** | 2024 |
+| Lower secondary | through **8th/9th grade** | 84.0% | **16.0% — about 1 in 6** | 2024 |
+| Upper secondary | through **12th grade** | 63.8% | **36.2% — about 1 in 3** | 2024 |
+
+Of 100 Dominican children: **90** finish 6th grade, **84** finish middle school, **64**
+finish high school. The attrition is not in primary school — it is a **20-point collapse
+during high school.**
+
+### 8.2 By wealth — the figures that actually describe poor communities
+
+Completion by household wealth quintile (2023, the most recent year with a full
+disaggregated series):
+
+| Level | Poorest 20% complete | **Poorest 20% do NOT** | Richest 20% do NOT | Gap |
+|---|---|---|---|---|
+| **6th grade** | 86.2% | **13.8%** | 1.4% | 12.4 pts |
+| **8th/9th grade** | 81.9% | **18.1%** | 6.0% | 12.1 pts |
+| **12th grade** | 45.0% | **55.0%** | 21.1% | **33.9 pts** |
+
+**The headline number for a poverty-focused mission: 55% of children in the poorest fifth of
+Dominican households do not finish high school — against 21% of the richest fifth.** A poor
+Dominican child is about **2.6 times** as likely to not finish high school as a rich one.
+
+Of 100 children in the poorest quintile: **86** finish 6th grade, **82** finish middle
+school, **45** finish high school.
+
+### 8.3 By location — rural
+
+| Level | Rural complete | **Rural do NOT** | Urban do NOT | Year |
+|---|---|---|---|---|
+| **6th grade** | 88.5% | **11.5%** | — | 2024 |
+| **8th/9th grade** | 77.5% | **22.5%** | — | 2024 |
+| **12th grade** | 55.6% | **44.4%** | 34.6% | 2024 |
+
+Rural lower-secondary completion fell sharply in the latest survey — 84.9% (2023) to 77.5%
+(2024). Treat the single-year move cautiously; household survey samples are noisy at this
+level of disaggregation. The direction is worth watching but do not build a claim on the
+one-year drop.
+
+### 8.4 A caution on "8th grade" specifically
+
+**The Dominican Republic does not have a clean measurement boundary at 8th grade**, so be
+careful how this one is worded.
+
+- Under the **pre-2014 structure**, "Educación Básica" ran 8 years (grades 1–8) and "Media"
+  4 years (grades 9–12). UNESCO's structural mapping for the DR reflects this, treating
+  lower secondary as **2 years, grades 7–8, ages 12–13** and upper secondary as 4 years,
+  ages 14–17. On that mapping, the 84.0% figure **is** the 8th-grade number.
+- Under the **2014 reform**, Nivel Primario is 6 years (grades 1–6) and Nivel Secundario is
+  6 years in two 3-year cycles (**7–9** and **10–12**). Domestically, the first secondary
+  cycle now ends at **grade 9**.
+
+I could not definitively confirm which mapping UIS applied to the 2024 ENHOGAR data. So:
+
+- **Safe on the website:** "16% don't finish middle school" or "don't complete the first
+  cycle of secondary school."
+- **Also safe:** cite it as "lower secondary completion" with the UIS source.
+- **Avoid:** stating flatly "X% don't make it past 8th grade" as a precise measured
+  boundary, unless you verify the mapping or use your own school records.
+
+The 6th-grade and 12th-grade figures carry no such ambiguity — primary is unambiguously
+grades 1–6, and grade 12 is unambiguously the bachillerato.
+
+### 8.5 What this means for the messaging
+
+The 6th and 8th grade dropout numbers are **not** the dramatic stats. Nine in ten Dominican
+children finish 6th grade; the system gets children through primary school reasonably well.
+Two things are genuinely extreme, and they are different problems:
+
+1. **Children finish primary school without learning.** 90% complete 6th grade, yet 81%
+   cannot read proficiently by age 10 (§1.2) and only 8% of 15-year-olds reach basic
+   proficiency in mathematics (§1.1). **Completion is not the crisis — the crisis is that
+   completion means nothing.** This is the most defensible and most striking framing
+   available, and it is well supported.
+2. **High school is where poor children are lost.** 55% of the poorest quintile never finish
+   (§8.2), against 21% of the richest.
+
+Suggested lines:
+
+> **9 in 10 Dominican children finish 6th grade. 8 in 10 still can't read properly.**
+> — UNESCO UIS; World Bank
+
+> **More than half of the poorest Dominican children never finish high school** — 55%,
+> against 21% of the wealthiest.
+> — UNESCO UIS, SDG 4.1.2, ENHOGAR 2023
+
+### 8.6 Query reference
+
+Reproducible via the UIS public API (no key required):
+
+```
+https://api.uis.unesco.org/api/public/data/indicators?indicator=CR.1&geoUnit=DOM&start=2015&end=2024
+```
+
+Indicator codes: `CR.1` primary, `CR.2` lower secondary, `CR.3` upper secondary.
+Suffixes: `.Q1` poorest quintile, `.Q5` richest quintile, `.RUR` rural, `.URB` urban.
+Add `&footnotes=true` to return the underlying survey and year.
+
+Cross-checks (administrative rather than survey-based, and noisier — the pandemic years
+swing 10+ points): World Bank WDI `SE.PRM.CMPT.ZS` primary completion 90.0% (2024) and
+`SE.SEC.CMPT.LO.ZS` lower secondary completion 79.7% (2024). Both corroborate the UIS
+figures within a few points.
